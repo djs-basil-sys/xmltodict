@@ -91,7 +91,11 @@ class _DictSAXHandler(object):
     def _attrs_to_dict(self, attrs):
         if isinstance(attrs, dict):
             return attrs
-        return self.dict_constructor(zip(attrs[0::2], attrs[1::2]))
+        _attrs = self.dict_constructor(zip(attrs[0::2], attrs[1::2]))
+        if _attrs.get('xsi:nil'):
+            if _attrs['xsi:nil'].lower() == 'true':
+                return self.dict_constructor()
+        return _attrs
 
     def startNamespaceDecl(self, prefix, uri):
         self.namespace_declarations[prefix or ''] = uri
